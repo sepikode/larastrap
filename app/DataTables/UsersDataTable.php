@@ -97,23 +97,26 @@ class UsersDataTable extends DataTable
      */
     protected function getButtons(): array
     {
-        return [
-            Button::make('excel'),
-            Button::make('csv'),
-            Button::make('pdf'),
-            Button::make('print'),
-            Button::make('reset'),
-            Button::make('reload'),
-            Button::make(['extend' => 'selectAll', 'text' => 'Select All']),
-            Button::make(['extend' => 'selectNone', 'text' => 'Deselect All']),
-            Button::make(['text' => 'Delete', 'extend' => 'selected', 'attr' => ['id' => 'massDelete']])
-                ->action($this->bulkDeleteActionCallback()),
-            Button::make(['text' => 'Activate', 'extend' => 'selected', 'attr' => ['id' => 'massActivate']])
-            ->action($this->bulkActivateActionCallback()),
-            Button::make(['text' => 'Deactivate', 'extend' => 'selected', 'attr' => ['id' => 'massDeactivate']])
-            ->action($this->bulkDeactivateActionCallback()),
+        $buttons = [
+            'add',
+            'excel',
+            'csv',
+            'pdf',
+            'print',
+            'reset',
+            'reload',
+            ['extend' => 'selectAll', 'text' => 'Select All'],
+            ['extend' => 'selectNone', 'text' => 'Deselect All'],
+            ['text' => 'Delete', 'extend' => 'selected', 'attr' => ['id' => 'massDelete'], 'action' => $this->bulkDeleteActionCallback()],
+            ['text' => 'Activate', 'extend' => 'selected', 'attr' => ['id' => 'massActivate'], 'action' => $this->bulkActivateActionCallback()],
+            ['text' => 'Deactivate', 'extend' => 'selected', 'attr' => ['id' => 'massDeactivate'], 'action' => $this->bulkDeactivateActionCallback()],
         ];
+
+        return array_map(function($button) {
+            return is_array($button) ? Button::make($button) : Button::make($button);
+        }, $buttons);
     }
+
 
     public function initComplete()
     {
